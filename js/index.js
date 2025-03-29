@@ -38,21 +38,19 @@ document.getElementById("btnThemNV").onclick = function (e) {
 
     // Kiểm tra các ô nhập có bị trống không
     isValid =
+
         kiemTraThongTinNhapVao(nhanVien.tknv, tbTKNV, erromsg) &&
         kiemTraThongTinNhapVao(nhanVien.name, tbTen, erromsg) &&
         kiemTraThongTinNhapVao(nhanVien.email, tbEmail, erromsg) &&
-        kiemTraThongTinNhapVao(nhanVien.password, tbMatKhau, erromsg) &&
-        kiemTraThongTinNhapVao(nhanVien.datepicker, tbNgay, erromsg) &&
-        kiemTraThongTinNhapVao(nhanVien.luongCB, tbLuongCB, erromsg) &&
-        kiemTraThongTinNhapVao(nhanVien.chucvu, tbChucVu, erromsg) &&
-        kiemTraThongTinNhapVao(nhanVien.gioLam, tbGiolam, erromsg);
 
-    // Kiểm tra các điều kiện nhập hợp lệ
-    isValid =
-        isValid &&
+        kiemTraMatKhau(nhanVien.password, tbMatKhau, "Phải chứa ít nhất 1 ký tự số, 1 ký tự in hoa và 1 ký tự đặc biệt") &&
+        kiemTraThongTinNhapVao(nhanVien.datepicker, tbNgay, erromsg) &&
+
         isNumber(nhanVien.luongCB, tbLuongCB, 1000000, 20000000) &&
-        isTime(nhanVien.gioLam, tbGiolam, 80, 200) &&
-        kiemTraChucVu(nhanVien.chucvu, tbChucVu);
+        kiemTraThongTinNhapVao(nhanVien.chucvu, tbChucVu, erromsg) &&
+
+        isTime(nhanVien.gioLam, tbGiolam, 80, 200);
+
 
     let gioLam = Number(document.getElementById("gioLam").value);
     nhanVien.xepLoai = kiemTraXepLoaiNhanVien(gioLam);
@@ -207,6 +205,29 @@ function tinhTongLuong(chucVu) {
         return luongCB * 1;
     }
 }
+function kiemTraMatKhau(password, span, erromsg) {
+    if (!password || password.trim() === "") {
+        span.innerHTML = "Vui lòng nhập mật khẩu!";
+        span.style.display = "block";
+        return false;
+    }
+
+    let regex = /^(?=.*\d)(?=.*[A-Z])(?=.*[\W_]).{6,10}$/;
+    let checkpassword = regex.test(password);
+
+    console.log(checkpassword);
+    if (!checkpassword) {
+        span.innerHTML = erromsg;
+        span.style.display = "block";
+        return false;
+    }
+
+    span.innerHTML = "";
+    span.style.display = "none";
+    return true;
+}
+
+
 // // reset
 // function reset() {
 //     document.querySelectorAll("#fromQLNV input , #fromQLNV select").value = "";
@@ -242,52 +263,54 @@ function xoaSinhVien(taiKhoan) {
 
 // Sua
 function laythongTinSV(taiKhoan) {
-    // dungf taikhoan de tim kiem sinh vien trong mang
-    let nhanVien = arrNhanVien.find((item) => {
-        return item.tknv === taiKhoan;
-    });
+    // Dùng tài khoản để tìm kiếm nhân viên trong mảng
+    let nhanVien = arrNhanVien.find((item) => item.tknv === taiKhoan);
+
     if (nhanVien) {
         let arrField = document.querySelectorAll(
-            "#fromQLNV input , #fromQLNV select"
+            "#fromQLNV input, #fromQLNV select"
         );
+
         for (let field of arrField) {
-            console.log(arrField);
             let { id } = field;
             field.value = nhanVien[id];
+
+            // Không cho phép chỉnh sửa tài khoản nhân viên
             if (id === "tknv") {
                 field.readOnly = true;
             }
         }
     }
-    // dua du lieu thong tin sinh vien vao cac input va select
-    // ngan chan nguoi dung sua mssv
 }
+
 function capNhatThongTinSV() {
-    let form = document.getElementById("fromQLNV");
     let nhanVien = layDLTuForm();
-    console.log(nhanVien);
-    let viTriCanTim = arrNhanVien.findIndex((item) => {
-        return item.tknv === nhanVien.tknv;
-    });
-    if (viTriCanTim != -1) {
+
+    let viTriCanTim = arrNhanVien.findIndex(
+        (item) => item.tknv === nhanVien.tknv
+    );
+
+    if (viTriCanTim !== -1) {
+        // Cập nhật thông tin nhân viên trong mảng
         arrNhanVien[viTriCanTim] = nhanVien;
 
+        // Lưu dữ liệu vào LocalStorage
         saveDataNhanVienLocal();
+
+        // Hiển thị lại danh sách
         renderListNhanVien();
+
+        // Reset form
         document.getElementById("fromQLNV").reset();
 
+        // Cho phép sửa tài khoản sau khi cập nhật xong
         document.getElementById("tknv").readOnly = false;
     }
-    document.querySelector(".btn-capnhat").onclick = capNhatThongTinSV();
-
-    //  gan function vao su kien click cua button capnhat
-    // lay du lieu tu form
-    //  tim kiem xem phan tu dang can chinh sua nam o vi tri index nao trong mnag
-    //  goij toi vi tri index do va thay the du lieu cu vs du lieu moi
-    //  cap nhat dl o local
-    // render
-    // clear du lieu tu form va bo readonly cho tknv
 }
+
+// Gán sự kiện đúng cách (chỉ gán hàm, không gọi ngay)
+document.querySelector(".btn-capnhat").onclick = capNhatThongTinSV;
+
 document.getElementById("searchName").oninput = function (e) {
     let keyWord = removeVietnameseTones(e.target.value.toLowerCase());
     console.log(keyWord);
