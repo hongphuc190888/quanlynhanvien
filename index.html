@@ -198,7 +198,7 @@
 								<input type="text" id="tknv" class="form-control input-sm" placeholder="Tài khoản">
 							</div>
 
-							<span class="sp-thongbao" id="tbTKNV"></span>
+							<span class="sp-thongbao text-danger" id="tbTKNV"></span>
 						</div>
 
 						<div class="form-group">
@@ -252,7 +252,7 @@
 								<div class="input-group-prepend">
 									<span class="input-group-text"><i class="fa fa-money" aria-hidden="true"></i></span>
 								</div>
-								<input type="number" name="luongCB" id="luongCB" class="form-control input-sm"
+								<input type="text" name="luongCB" id="luongCB" class="form-control input-sm"
 									placeholder="Lương cơ bản">
 							</div>
 							<span class="sp-thongbao" id="tbLuongCB"></span>
@@ -263,7 +263,7 @@
 									<span class="input-group-text"><i class="fa fa-briefcase"></i></span>
 								</div>
 								<select class="form-control" name="chucvu" id="chucvu">
-									<option>Chọn chức vụ</option>
+									<option value="">Chọn chức vụ</option>
 									<option>Sếp</option>
 									<option>Trưởng phòng</option>
 									<option>Nhân viên</option>
@@ -290,7 +290,7 @@
 				<!-- Modal footer -->
 				<div class="modal-footer" id="modal-footer">
 					<button id="btnThemNV" type="button" class="btn btn-success">Thêm người dùng</button>
-					<button id="btnCapNhat" type="button" class="btn btn-success">Cập nhật</button>
+					<button id="btnCapNhat" type="button" class="btn btn-success btn-capnhat">Cập nhật</button>
 					<button id="btnDong" type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
 				</div>
 
